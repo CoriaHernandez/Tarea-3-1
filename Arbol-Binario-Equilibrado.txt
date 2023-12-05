@@ -1,0 +1,117 @@
+#include <iostream>
+using namespace std;
+
+struct Nodo {					//saque cosas de internet de por aqui por alla y quien sabe por donde
+    int valor;					//y no tuve ni la menor idea de como balancear un arbol binario asi que esto fue lo maximo que pude hacer hahahhh
+    Nodo* izquierda;
+    Nodo* derecha;
+    int altura;
+
+    Nodo(int val) : valor(val), izquierda(NULL), derecha(NULL), altura(1) {}
+};
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int altura(Nodo* nodo) {
+    if (nodo == NULL) return 0;
+    return nodo->altura;
+}
+
+int obtenerBalance(Nodo* nodo) {
+    if (nodo == NULL) return 0;
+    return altura(nodo->izquierda) - altura(nodo->derecha);
+}
+
+Nodo* rotacionDerecha(Nodo* y) {
+    Nodo* x = y->izquierda;
+    Nodo* T2 = x->derecha;
+
+    x->derecha = y;
+    y->izquierda = T2;
+
+    y->altura = max(altura(y->izquierda), altura(y->derecha)) + 1;
+    x->altura = max(altura(x->izquierda), altura(x->derecha)) + 1;
+
+    return x;
+}
+
+Nodo* rotacionIzquierda(Nodo* x) {
+    Nodo* y = x->derecha;
+    Nodo* T2 = y->izquierda;
+
+    y->izquierda = x;
+    x->derecha = T2;
+
+    x->altura = max(altura(x->izquierda), altura(x->derecha)) + 1;
+    y->altura = max(altura(y->izquierda), altura(y->derecha)) + 1;
+
+    return y;
+}
+
+Nodo* insertarNodo(Nodo* nodo, int valor) {
+    if (nodo == NULL) {
+        return new Nodo(valor);
+    }
+
+    if (valor < nodo->valor) {
+        nodo->izquierda = insertarNodo(nodo->izquierda, valor);
+    } else if (valor > nodo->valor) {
+        nodo->derecha = insertarNodo(nodo->derecha, valor);
+    } else {
+        return nodo;
+    }
+
+    nodo->altura = 1 + max(altura(nodo->izquierda), altura(nodo->derecha));
+
+    int balance = obtenerBalance(nodo);
+
+    if (balance > 1 && valor < nodo->izquierda->valor) {
+        return rotacionDerecha(nodo);
+    }
+
+    if (balance < -1 && valor > nodo->derecha->valor) {
+        return rotacionIzquierda(nodo);
+    }
+
+    if (balance > 1 && valor > nodo->izquierda->valor) {
+        nodo->izquierda = rotacionIzquierda(nodo->izquierda);
+        return rotacionDerecha(nodo);
+    }
+
+    if (balance < -1 && valor < nodo->derecha->valor) {
+        nodo->derecha = rotacionDerecha(nodo->derecha);
+        return rotacionIzquierda(nodo);
+    }
+
+    return nodo;
+}
+
+void preOrdenRecursivo(Nodo* nodo) {
+    if (nodo != NULL) {
+        cout << nodo->valor << " ";
+        preOrdenRecursivo(nodo->izquierda);
+        preOrdenRecursivo(nodo->derecha);
+    }
+}
+
+int main() {
+    Nodo* raiz = NULL;
+    int valor;
+
+    cout << "Ingrese los valores para insertar en el árbol (ingrese -1 para finalizar):" << endl;
+    while (true) {
+        cout << "Ingrese un valor (-1 para finalizar): ";
+        cin >> valor;
+        if (valor == -1) break;
+
+        raiz = insertarNodo(raiz, valor);
+    }
+
+    cout << "Recorrido Preorden del Árbol AVL: ";
+    preOrdenRecursivo(raiz);
+    cout << endl;
+
+    return 0;
+}

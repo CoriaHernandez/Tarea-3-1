@@ -1,0 +1,92 @@
+#include<iostream>
+#include<conio.h>
+#include<stdlib.h>
+
+using namespace std;				//poderosisimo programacion ats
+
+struct nodo{
+    int dato;
+    nodo *der;
+    nodo *izq;
+
+};
+
+nodo *crearnodo(int);
+void insertarnodo(nodo *&,int);
+void menu();
+void mostrararbol(nodo *,int);
+
+nodo *arbol=NULL; 
+
+int main(){
+    menu();
+    
+    getch();
+    return 0;
+}
+
+nodo *crearnodo(int n){
+    nodo *nuevo_nodo=new nodo();
+    nuevo_nodo->dato=n;
+    nuevo_nodo->der=NULL;
+    nuevo_nodo->izq=NULL;
+    
+    return nuevo_nodo;
+}
+
+void insertarnodo(nodo *& arbol,int n){
+    if(arbol==NULL){
+        nodo *nuevo_nodo=crearnodo(n);
+        arbol=nuevo_nodo;
+    }else{
+        int valoraiz= arbol->dato;
+            if(n< valoraiz){
+                insertarnodo(arbol->izq,n);
+            }else{
+                insertarnodo(arbol->der,n);
+            }
+    }
+}
+ 
+void menu(){
+    int dato, opc,contador=0;
+    cout<<"MENU"<<endl;
+    cout<<"arbol binario normal de numeros enteros"<<endl;
+    
+    do{
+        cout<<"1) insertar un nuevo nodo "<<endl;
+        cout<<"2) mostrar arbol "<<endl;
+        cout<<"3) salir "<<endl;
+        cin>>opc;
+    
+        switch(opc){
+           case 1:
+             cout<<"Ingrese un numero entero"<<endl;
+                cin>>dato;
+                insertarnodo(arbol,dato);
+                system("pause");
+                break;
+            case 2:
+                cout<<" mostrando arbol completo: "<<endl;
+                mostrararbol(arbol,contador);
+                cout<<"\n ";
+                system("pause");
+             break;
+        }
+        system("cls");
+    }while(opc != 3);
+}
+
+void mostrararbol(nodo *arbol,int cont){
+    if(arbol==NULL){
+        return;
+    }else{
+        mostrararbol(arbol->der, cont+1);
+        for(int i =0;i< cont;i++){
+            cout<<"    ";
+        
+        }
+        cout<<arbol->dato<<endl;
+        mostrararbol(arbol->izq, cont+1);
+    }
+}

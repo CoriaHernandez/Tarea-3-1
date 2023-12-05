@@ -1,0 +1,45 @@
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class GrafoDirigido {
+    private:
+        int numVertices;
+        vector<vector<int>>adyacencia;
+
+    public:
+         GrafoDirigido(int vertices) : numVertices(vertices) {
+         adyacencia.resize(numVertices);
+        }
+
+void agregarArco(int origen, int destino) {
+        adyacencia[origen].push_back(destino);
+    }
+
+void mostrarGrafo() {
+        for (int i=0; i<numVertices;++i) {
+            cout <<"Vértice "<<i<<" está conectado con: ";
+            for (int vecino:adyacencia[i]) {
+                cout<<vecino<<" ";
+            }
+            cout<<endl;
+        }
+    }
+};
+
+int main() {
+    GrafoDirigido grafo(5);
+
+    grafo.agregarArco(0,1);
+    grafo.agregarArco(0,2);
+    grafo.agregarArco(1,2);
+    grafo.agregarArco(2,3);
+    grafo.agregarArco(3,4);
+    grafo.agregarArco(4,0);
+
+    cout<<"Grafo dirigido:"<<endl;
+    grafo.mostrarGrafo();
+
+    return 0;
+}
